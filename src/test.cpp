@@ -43,10 +43,12 @@ S get_sequence(const string& _file_name)
     return result;
 }
 
+extern size_t dpt, maxdpt, countdpt, totaldpt;  //  измеритель глубины
+
 int main()
 {
     uint64_t progress = 0;
-    uint64_t percent = 0;
+    double percent = 0;
     time_point<system_clock> time;
     nanoseconds total_time(0);
     
@@ -58,7 +60,7 @@ int main()
     //cout << "count: " << write.size() << endl;
     
     progress = 0;
-    percent = write.size() / 100;
+    percent = write.size() / 100.;
     
     for (const string &item : write)
     {
@@ -66,8 +68,8 @@ int main()
         total_time += system_clock::now() - time;
         
         st.insert(item);
-        
-        if (++progress % (10 * percent) == 0)
+       
+        if (++progress % int(10 * percent) == 0)
         {
             cout << "time: " << duration_cast<milliseconds>(total_time).count()
                  << "ms progress: " << progress << " / " << write.size() << "\n";
@@ -81,7 +83,7 @@ int main()
     //return -1;
     
     progress = 0;
-    percent = modify.size() / 100;
+    percent = modify.size() / 100.;
 
     modify_sequence::const_iterator mitr = modify.begin();
     read_sequence::const_iterator ritr = read.begin();
@@ -93,16 +95,16 @@ int main()
         st.erase(mitr->first);
         st.insert(mitr->second);
         
-        data_t *d = st.get(ritr->first);
+        const char *d = st.get(ritr->first);
         
         total_time += system_clock::now() - time;
-        if (ritr->second != d->key)
+        if ( strcmp( ritr->second.data(), d) != 0)
         {
             cout << "test failed " << i << endl;
             return 1;
         }
 
-        if (++progress % (10 * percent) == 0)
+        if (++progress % int(10 * percent) == 0)
         {
             cout << "time: " << duration_cast<milliseconds>(total_time).count()
                  << "ms progress: " << progress << " / " << modify.size() << "\n";
