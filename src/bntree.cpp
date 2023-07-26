@@ -98,7 +98,7 @@ struct BD {
 
 };
 
-extern MemHeap<BD>  BDHeap;
+MemHeap<BD>  BDHeap;
 
 inline
 bool node_s::init(const string& k) {
@@ -168,7 +168,7 @@ uint64_t bntree::search(const string &key) {
     }
 }
 
-extern size_t dpt, maxdpt, countdpt, totaldpt;  //  измеритель глубины
+size_t dpt, maxdpt, countdpt, totaldpt;  //  измеритель глубины
 
 void bntree::insert(const string &key, const string &val) {
     node_t *search_node, *prev_node, **node;
@@ -727,7 +727,10 @@ uint64_t bntree::cpl2(uint64_t x) {
 uint64_t bntree::ilog2(uint64_t d) {
     int result;
     std::frexp(d, &result);
-    return result - 1;
+    if (result > 1) {
+        return result - 1;
+    }
+    return 0;
 }
 
 /*
